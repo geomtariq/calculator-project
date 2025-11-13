@@ -73,3 +73,25 @@ class Calculator:
         """
         # Note: Error handling for division by zero will be implemented in Phase 4.
         return self._to_decimal(a) / self._to_decimal(b)
+
+    def power(self, base: Union[int, float, str, Decimal], exponent: Union[int, float, str, Decimal]) -> Decimal:
+        """
+        Raises a number to a power.
+
+        Args:
+            base: The base number.
+            exponent: The exponent.
+
+        Returns:
+            The result of base raised to the power of exponent as a Decimal object.
+
+        Raises:
+            ValueError: If base and exponent are both 0 (0**0 is undefined).
+        """
+        base_dec = self._to_decimal(base)
+        exponent_dec = self._to_decimal(exponent)
+
+        if base_dec == 0 and exponent_dec == 0:
+            raise ValueError("0 to the power of 0 is undefined")
+
+        return base_dec ** exponent_dec

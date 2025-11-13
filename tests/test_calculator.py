@@ -54,3 +54,19 @@ class TestBasicArithmetic:
     def test_divide(self, calc, a, b, expected):
         """Test the divide method."""
         assert calc.divide(a, b) == expected
+
+    @pytest.mark.parametrize("base, exponent, expected", [
+        (Decimal("2"), Decimal("3"), Decimal("8")),          # Positive integers
+        (Decimal("2"), Decimal("-1"), Decimal("0.5")),       # Negative exponent
+        (Decimal("9"), Decimal("0.5"), Decimal("3")),        # Fractional exponent (sqrt)
+        (Decimal("0"), Decimal("5"), Decimal("0")),          # Zero base, positive exponent
+        (Decimal("5"), Decimal("0"), Decimal("1")),          # Zero exponent, positive base
+    ])
+    def test_power(self, calc, base, exponent, expected):
+        """Test the power method."""
+        assert calc.power(base, exponent) == expected
+
+    def test_power_zero_to_zero_raises_value_error(self, calc):
+        """Test that 0^0 raises a ValueError."""
+        with pytest.raises(ValueError, match="0 to the power of 0 is undefined"):
+            calc.power(Decimal("0"), Decimal("0"))
