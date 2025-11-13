@@ -1,4 +1,4 @@
-from decimal import Decimal, getcontext
+from decimal import Decimal, getcontext, InvalidOperation
 from typing import Union
 
 class Calculator:
@@ -19,7 +19,10 @@ class Calculator:
         """Converts a number to a Decimal object, raising TypeError for invalid inputs."""
         if not isinstance(number, (int, float, str, Decimal)):
             raise TypeError("All inputs must be numeric (int, float, str, or Decimal)")
-        return Decimal(number)
+        try:
+            return Decimal(number)
+        except InvalidOperation:
+            raise TypeError(f"Invalid numeric string: {number}")
 
     def add(self, a: Union[int, float, str, Decimal], b: Union[int, float, str, Decimal]) -> Decimal:
         """
@@ -70,9 +73,14 @@ class Calculator:
 
         Returns:
             The quotient of a and b as a Decimal object.
+
+        Raises:
+            ZeroDivisionError: If the divisor (b) is zero.
         """
-        # Note: Error handling for division by zero will be implemented in Phase 4.
-        return self._to_decimal(a) / self._to_decimal(b)
+        b_dec = self._to_decimal(b)
+        if b_dec == 0:
+            raise ZeroDivisionError("Cannot divide by zero")
+        return self._to_decimal(a) / b_dec
 
     def power(self, base: Union[int, float, str, Decimal], exponent: Union[int, float, str, Decimal]) -> Decimal:
         """
@@ -94,4 +102,23 @@ class Calculator:
         if base_dec == 0 and exponent_dec == 0:
             raise ValueError("0 to the power of 0 is undefined")
 
-        return base_dec ** exponent_dec
+        result = base_dec ** exponent_dec
+        return result
+
+    def sqrt(self, number: Union[int, float, str, Decimal]) -> Decimal:
+        """
+        Calculates the square root of a number.
+
+        Args:
+            number: The number to calculate the square root of.
+
+        Returns:
+            The square root as a Decimal object.
+
+        Raises:
+            ValueError: If the number is negative.
+        """
+        number_dec = self._to_decimal(number)
+        if number_dec < 0:
+            raise ValueError("Cannot calculate square root of a negative number")
+        return number_dec.sqrt()
